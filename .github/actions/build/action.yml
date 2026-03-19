@@ -18,6 +18,7 @@ runs:
     - uses: docker/build-push-action@v6
       id: build
       with:
+        load: true
         provenance: false
         tags: "${{ inputs.REGISTRY }}/test/${{ inputs.IMGNAME }}"
         target: "${{ inputs.TARGET }}"
