@@ -1,0 +1,27 @@
+env:
+  KUBECONFIG: /tmp/github-ci.kubeconfig
+inputs:
+  IMGNAME:
+    required: true
+  REGISTRY:
+    required: true
+  TARGET:
+    required: false
+  TAG:
+    required: false
+    description: Tag of the docker image
+outputs:
+  IMAGE_DIGEST:
+    description: "Random number"
+    value: ${{ steps.build.outputs.IMAGE_DIGEST }}
+name: Build
+runs:
+  steps:
+  - run: |
+      IMAGE="${{ inputs.REGISTRY }}/${{ env.NAMESPACE }}/${{ inputs.IMGNAME }}:${{ inputs.TAG || env.CI_COMMIT_REF_SLUG }}"
+      docker build . -t $IMAGE
+      docker push $IMAGE
+      echo "IMAGE_DIGEST=$(docker images --no-trunc --quiet test $IMAGE)" | tr -d "\n"  >> $GITHUB_OUTPUT
+    shell: bash
+    id: build
+  using: composite

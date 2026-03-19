@@ -1,0 +1,32 @@
+env:
+  KUBECONFIG: /tmp/github-ci.kubeconfig
+  REGISTRY: registry.cloudscale-lpg-2.appuio.cloud
+  TEST_DOMAIN: apps.cloudscale-lpg-2.appuio.cloud
+  CI_COMMIT_SHA: ${{ github.sha }}
+
+jobs:
+  build:
+    environment: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/build
+      id: build
+      with:
+        IMGNAME: "keycloak-customization"
+        REGISTRY: "${{ env.REGISTRY }}"
+        TAG: '${{ github.sha }}'
+    - env:
+        NEWLINE: |2+
+        IMAGE_DIGEST: ${{ steps.build.outputs.IMAGE_DIGEST }}
+
+      name: Helm Chart preview
+      run: |
+        env
+
+name: Build and deploy to test
+"on":
+  push:
+    branches:
+    - '**'
+  workflow_dispatch: {}
