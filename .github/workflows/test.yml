@@ -15,7 +15,6 @@ jobs:
       with:
         IMGNAME: "keycloak-customization"
         REGISTRY: "${{ env.REGISTRY }}"
-        TAG: '${{ github.sha }}'
     - env:
         NEWLINE: |2+
         IMAGE_DIGEST: ${{ steps.build.outputs.IMAGE_DIGEST }}
