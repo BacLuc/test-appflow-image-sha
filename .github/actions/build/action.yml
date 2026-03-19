@@ -19,7 +19,6 @@ runs:
       id: build
       with:
         provenance: false
-        push: true
         tags: "${{ inputs.REGISTRY }}/test/${{ inputs.IMGNAME }}"
         target: "${{ inputs.TARGET }}"
   using: composite
