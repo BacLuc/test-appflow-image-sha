@@ -18,7 +18,7 @@ name: Build
 runs:
   steps:
   - run: |
-      IMAGE="${{ inputs.REGISTRY }}/${{ env.NAMESPACE }}/${{ inputs.IMGNAME }}:${{ inputs.TAG || env.CI_COMMIT_REF_SLUG }}"
+      IMAGE="${{ inputs.REGISTRY }}/test/${{ inputs.IMGNAME }}:${{ inputs.TAG || env.CI_COMMIT_REF_SLUG }}"
       docker build . -t $IMAGE
       docker push $IMAGE
       echo "IMAGE_DIGEST=$(docker images --no-trunc --quiet test $IMAGE)" | tr -d "\n"  >> $GITHUB_OUTPUT
