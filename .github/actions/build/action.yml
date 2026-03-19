@@ -7,20 +7,19 @@ inputs:
     required: true
   TARGET:
     required: false
-  TAG:
-    required: false
-    description: Tag of the docker image
 outputs:
   IMAGE_DIGEST:
-    description: "Random number"
-    value: ${{ steps.build.outputs.IMAGE_DIGEST }}
+    description: "Image digest"
+    value: ${{ steps.build.outputs.digest }}
 name: Build
 runs:
   steps:
-  - run: |
-      IMAGE="${{ inputs.REGISTRY }}/test/${{ inputs.IMGNAME }}:${{ inputs.TAG || env.CI_COMMIT_REF_SLUG }}"
-      docker build . -t $IMAGE
-      echo "IMAGE_DIGEST=$(docker images --no-trunc --quiet $IMAGE | sed s/:/@/)" | tr -d "\n"  >> $GITHUB_OUTPUT
-    shell: bash
-    id: build
+    - uses: docker/setup-buildx-action@v3
+    - uses: docker/build-push-action@v6
+      id: build
+      with:
+        provenance: false
+        push: true
+        tags: "${{ inputs.REGISTRY }}/test/${{ inputs.IMGNAME }}:${{ env.CI_COMMIT_REF_SLUG }}"
+        target: "${{ inputs.TARGET }}"
   using: composite
